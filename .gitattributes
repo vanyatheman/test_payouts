@@ -1,0 +1,6 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Needed for Windows users. *.sh files are auto-corrected to crlf format by git on Windows
+# and thus can not be properly executed.
+*.sh text eol=lf

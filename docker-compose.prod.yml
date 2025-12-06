@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./docker/backend.Dockerfile
+    container_name: payouts_django
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - celery_worker
+    # command: >
+    #   sh -c "
+    #     python payouts_project/manage.py migrate &&
+    #     python payouts_project/manage.py collectstatic --noinput
+    #   "
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./docker/backend.Dockerfile
+    container_name: payouts_celery_worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    command: celery -A payouts_project worker --loglevel=info
+
+  postgres:
+    image: postgres:15
+    container_name: payouts_postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: payouts_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  pgadmin:
+    image: dpage/pgadmin4:7
+    container_name: payouts_pgadmin
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "15433:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  redis_data:
+  pgadmin_data:

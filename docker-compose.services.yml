@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: payouts_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: payouts_db
+      POSTGRES_USER: payouts_user
+      POSTGRES_PASSWORD: payouts_pass
+    ports:
+      - "5432:5432"
+    networks:
+      - database_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:7
+    container_name: payouts_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: asd@asd123.app
+      PGADMIN_DEFAULT_PASSWORD: zxcasdqwe
+    ports:
+      - "127.0.0.1:15433:80"
+    depends_on:
+      - postgres
+    networks:
+      - database_network
+    volumes:
+      - pg_admin_volume:/var/lib/pgadmin/
+
+  redis:
+    image: redis:7
+    container_name: payouts_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+
+networks:
+  database_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pg_admin_volume:
+  redis_data:
