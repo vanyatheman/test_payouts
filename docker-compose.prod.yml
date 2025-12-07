@@ -32,7 +32,7 @@ services:
     depends_on:
       - postgres
       - redis
-    command: celery -A payouts_project worker --loglevel=info
+    command: celery -A payouts_project worker --loglevel=info --concurrency=4
 
   postgres:
     image: postgres:15
