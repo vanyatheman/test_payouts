@@ -9,12 +9,17 @@ run:
 	$(MANAGE) runserver
 
 test:
-	$(MANAGE) test -v 2
+	cd payouts_project && \
+	$(PYTHON) manage.py test -v 2
 
 worker:
 	# On Linux:   celery -A payouts_project worker -l info --concurrency=4
 	# On Windows: celery -A payouts_project worker -l info -P solo
-	celery -A payouts_project worker -l info -P solo
+	cd payouts_project && \
+	celery -A payouts_project worker -l info --concurrency=4
+
+pip:
+	pip install -r payouts_project/requirements.txt
 
 migrate:
 	$(MANAGE) migrate
