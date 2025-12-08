@@ -24,7 +24,6 @@ class Payout(models.Model):
     )
 
     currency: str = models.CharField(
-        max_length=3,
         verbose_name="Валюта",
         help_text="Трёхбуквенный код валюты (ISO 4217), например USD.",
     )
