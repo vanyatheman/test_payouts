@@ -5,10 +5,8 @@ services:
     image: postgres:15
     container_name: payouts_postgres
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: payouts_db
-      POSTGRES_USER: payouts_user
-      POSTGRES_PASSWORD: payouts_pass
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     networks:
@@ -19,9 +17,8 @@ services:
   pgadmin:
     image: dpage/pgadmin4:7
     container_name: payouts_pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: asd@asd123.app
-      PGADMIN_DEFAULT_PASSWORD: zxcasdqwe
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:15433:80"
     depends_on:
